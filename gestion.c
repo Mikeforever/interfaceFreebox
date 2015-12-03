@@ -28,7 +28,7 @@ void authentifierClient (TCPsocket sock)
 
         // Stockage de ces informations dans un fichier
         FILE* fichier = NULL;
-        fichier = fopen("token.txt", "w");
+        fichier = fopen(FICHIER_TOKEN, "w");
 
         if (fichier != NULL)
         {
@@ -59,7 +59,7 @@ int validerAuthentification(TCPsocket sock)
     infoJson->premier = NULL;
     int resultat = 0;
 
-    if (recuperationJsonFichier(infoJson, "token.txt"))
+    if (recuperationJsonFichier(infoJson, FICHIER_TOKEN))
     {
         char *trackid = "";
         int id = 0;
@@ -131,7 +131,7 @@ void ouvrirSession(TCPsocket sock, char **sessionToken, char **permissions)
             // Récupération du token
             objetJson *infoJson = malloc(sizeof(objetJson));
             infoJson->premier = NULL;
-            if (recuperationJsonFichier(infoJson, "token.txt"))
+            if (recuperationJsonFichier(infoJson, FICHIER_TOKEN))
             {
                 char *token = NULL;
                 char password[1024] = "";
@@ -211,4 +211,79 @@ void SupprimerCaractere(char* str, char c) //Enleve tous les c de str
       id_read++;
     }
     str[id_write] = '\0';
+}
+
+void recupDonneesIdentifiants(char *id, char **valeur)
+{
+    FILE *fichier = NULL;
+    fichier  = fopen(FICHIER_IDENTIFIANTS, "r");
+
+    if (fichier != NULL)
+    {
+        // On récupère le contenu du fichier
+        char contenuFichier[1024] = "";
+        int position = 0;
+        char caractereActuel = 0;
+        char mot[1024] = "";
+
+        do
+        {
+            caractereActuel = fgetc(fichier);
+
+            contenuFichier[position] = caractereActuel;
+
+            position++;
+        } while ((caractereActuel != EOF) && (position < 1023));
+
+        contenuFichier[position] = '\0';
+
+        // Fermeture du fichier
+        fclose(fichier);
+
+        // On repère la chaine de caractères passée en paramètres
+        position = 0;
+
+        // Tant que le mot ne correspond pas
+        while (strcmp(mot, id))
+        {
+            // On déplace le curseur jusqu'au prochain mot sauf pour le premier mot
+            while ((contenuFichier[position] != '\n') && (position != 0) && (contenuFichier[position] != '\0'))
+                position++;
+
+            // Si on est sur un saut de ligne, on avance d'un pas
+            if (contenuFichier[position] == '\n')
+                position++;
+
+            int debut = position;
+
+            // On remplit le mot
+            while ((contenuFichier[position] != '=') && (contenuFichier[position] != '\0'))
+            {
+                mot[position - debut] = contenuFichier[position];
+                position++;
+            }
+
+            // On finit le mot
+            mot[position - debut] = '\0';
+        }
+
+        // Si le mot est non vide, on récupère le résultat entre guillemets
+        if (strcmp(mot, ""))
+        {
+            *valeur = malloc(1024*sizeof(char));
+
+            // On se positionne après le premier guillemet
+            position+=2;
+            int debut = position;
+
+            while ((contenuFichier[position] != '"') && (contenuFichier[position] != '\0') && (contenuFichier[position] != '\n'))
+            {
+                (*valeur)[position - debut] = contenuFichier[position];
+                position++;
+            }
+
+            // On finit la chaine de caractères
+            (*valeur)[position - debut] = '\0';
+        }
+    }
 }

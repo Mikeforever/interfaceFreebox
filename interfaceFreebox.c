@@ -344,7 +344,10 @@ void requeteMajLCDConfigurationOReinit(TCPsocket sock, objetJson *reponseJson, c
 void generationRequeteGET(TCPsocket sock, char *entete, objetJson *reponseJson)
 {
     char requete[1024] = "";
-    sprintf(requete, "GET %s HTTP/1.1\nHost: %s\n\n", entete, ADRESSE_IP);
+    char *adresseIP = NULL;
+
+    recupDonneesIdentifiants("ADRESSE_IP", &adresseIP);
+    sprintf(requete, "GET %s HTTP/1.1\nHost: %s\n\n", entete, adresseIP);
 
     echangeReponseJson(sock, requete, reponseJson);
 }
@@ -353,7 +356,10 @@ void generationRequeteGETSession(TCPsocket sock, char *entete, objetJson *repons
 {
     char requete[1024] = "";
     SupprimerCaractere(sessionToken, '\\');
-    sprintf(requete, "GET %s HTTP/1.1\nHost: %s\nX-Fbx-App-Auth: %s\n\n", entete, ADRESSE_IP, sessionToken);
+    char *adresseIP = NULL;
+
+    recupDonneesIdentifiants("ADRESSE_IP", &adresseIP);
+    sprintf(requete, "GET %s HTTP/1.1\nHost: %s\nX-Fbx-App-Auth: %s\n\n", entete, adresseIP, sessionToken);
 
     echangeReponseJson(sock, requete, reponseJson);
 }
@@ -361,7 +367,10 @@ void generationRequeteGETSession(TCPsocket sock, char *entete, objetJson *repons
 void generationRequetePOST(TCPsocket sock, char *entete, char *corps, objetJson *reponseJson)
 {
     char messageCompose[1024] = "";
-    sprintf(messageCompose, "POST %s HTTP/1.1\nHost: %s\nContent-Type: x-www-form-urlencoded\nContent-Length: %d\n\n%s", entete, ADRESSE_IP, strlen(corps), corps); // Ajoute l'élément nécessaire pour la bonne exécution de la requête
+    char *adresseIP = NULL;
+
+    recupDonneesIdentifiants("ADRESSE_IP", &adresseIP);
+    sprintf(messageCompose, "POST %s HTTP/1.1\nHost: %s\nContent-Type: x-www-form-urlencoded\nContent-Length: %d\n\n%s", entete, adresseIP, strlen(corps), corps); // Ajoute l'élément nécessaire pour la bonne exécution de la requête
 
     echangeReponseJson(sock, messageCompose, reponseJson);
 }
@@ -370,7 +379,10 @@ void generationRequetePOSTSession(TCPsocket sock, char *entete, char *corps, obj
 {
     char messageCompose[1024] = "";
     SupprimerCaractere(sessionToken, '\\');
-    sprintf(messageCompose, "POST %s HTTP/1.1\nHost: %s\nX-Fbx-App-Auth: %s\nContent-Type: x-www-form-urlencoded\nContent-Length: %d\n\n%s",entete, ADRESSE_IP, sessionToken, strlen(corps), corps); // Ajoute l'élément nécessaire pour la bonne exécution de la requête
+    char *adresseIP = NULL;
+
+    recupDonneesIdentifiants("ADRESSE_IP", &adresseIP);
+    sprintf(messageCompose, "POST %s HTTP/1.1\nHost: %s\nX-Fbx-App-Auth: %s\nContent-Type: x-www-form-urlencoded\nContent-Length: %d\n\n%s",entete, adresseIP, sessionToken, strlen(corps), corps); // Ajoute l'élément nécessaire pour la bonne exécution de la requête
 
     echangeReponseJson(sock, messageCompose, reponseJson);
 }
@@ -378,8 +390,11 @@ void generationRequetePOSTSession(TCPsocket sock, char *entete, char *corps, obj
 void generationRequetePUTSession(TCPsocket sock, char *entete, char *corps, objetJson *reponseJson, char *sessionToken)
 {
     char messageCompose[1024] = "";
+    char *adresseIP = NULL;
+
+    recupDonneesIdentifiants("ADRESSE_IP", &adresseIP);
     SupprimerCaractere(sessionToken, '\\');
-    sprintf(messageCompose, "PUT %s HTTP/1.1\nHost: %s\nX-Fbx-App-Auth: %s\nContent-Type: x-www-form-urlencoded\nContent-Length: %d\n\n%s", entete, ADRESSE_IP, sessionToken, strlen(corps), corps); // Ajoute l'élément nécessaire pour la bonne exécution de la requête
+    sprintf(messageCompose, "PUT %s HTTP/1.1\nHost: %s\nX-Fbx-App-Auth: %s\nContent-Type: x-www-form-urlencoded\nContent-Length: %d\n\n%s", entete, adresseIP, sessionToken, strlen(corps), corps); // Ajoute l'élément nécessaire pour la bonne exécution de la requête
 
     echangeReponseJson(sock, messageCompose, reponseJson);
 }

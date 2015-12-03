@@ -39,9 +39,16 @@ int main(int argc, char *argv[])
 
     // Définition de l'écran
     ecran = SDL_SetVideoMode(TAILLE_ECRAN_LARGEUR, TAILLE_ECRAN_HAUTEUR, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
-    SDL_WM_SetCaption("Affichage état Freebox", NULL);
+    SDL_WM_SetCaption("Affichage Etat Freebox", NULL);
 
-	ouvrirSocket(&sock, ADRESSE_IP, PORT);
+    // Récupération des valeurs de l'adresse IP et du port
+    char *adresseIP = NULL;
+    char *port = NULL;
+
+    recupDonneesIdentifiants("ADRESSE_IP", &adresseIP);
+    recupDonneesIdentifiants("PORT", &port);
+
+	ouvrirSocket(&sock, adresseIP, port);
 
     // On demande une ouverture de session, si ça échoue, ça demande une ouverture et une validation, possible qu'en local
     if (!validerAuthentification(sock))

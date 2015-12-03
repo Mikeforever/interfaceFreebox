@@ -462,6 +462,7 @@ int recuperationJsonFichier(objetJson *contenu, char *nomFichier)
     {
         return 0;
     }
+    else
     {
         // On récupère le contenu du fichier
         char contenuFichier[1024] = "";
@@ -485,6 +486,6 @@ int recuperationJsonFichier(objetJson *contenu, char *nomFichier)
         // Fermeture du fichier avant de quitter la fonction
         fclose(fichier);
 
-        return parseurJson(contenuFichier, &position, contenu, OBJET);;
+        return parseurJson(contenuFichier, &position, contenu, OBJET);
     }
 }

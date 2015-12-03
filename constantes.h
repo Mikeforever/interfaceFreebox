@@ -7,6 +7,9 @@
 #define LIGNE_CONTENT_TYPE "Content-Type:"
 #define CONTENU_TYPE_JSON "application/json"
 
+#define FICHIER_IDENTIFIANTS "identifiants.txt"
+#define FICHIER_TOKEN "token.txt"
+
 #define TEMPS_AFFICHAGE 500
 
 #define TAILLE_ECRAN_LARGEUR 1024
