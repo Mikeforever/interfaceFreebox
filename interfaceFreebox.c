@@ -237,7 +237,18 @@ void echangeReponseJson(TCPsocket sock, const char *message, objetJson *reponseJ
 
 void requeteAutorisation(TCPsocket sock, objetJson *reponseJson)
 {
-    generationRequetePOST(sock, "/api/v3/login/authorize", "{\"app_id\": \"AppliMike\",\"app_name\": \"testApp\",\"app_version\": \"0.0.1\",\"device_name\": \"PcMike\"}", reponseJson);
+    char requete[1024] = "";
+    char *appId = NULL;
+    char *appName = NULL;
+    char *appVersion = NULL;
+    char *deviceName = NULL;
+
+    recupDonneesIdentifiants("APP_ID", &appId);
+    recupDonneesIdentifiants("APP_NAME", &appName);
+    recupDonneesIdentifiants("APP_VERSION", &appVersion);
+    recupDonneesIdentifiants("DEVICE_NAME", &deviceName);
+    sprintf(requete, "{\"app_id\": \"%s\",\"app_name\": \"%s\",\"app_version\": \"%s\",\"device_name\": \"%s\"}", appId, appName, appVersion, deviceName);
+    generationRequetePOST(sock, "/api/v3/login/authorize", requete, reponseJson);
 }
 
 void requeteVerification(TCPsocket sock, objetJson *reponseJson, char *trackid)
