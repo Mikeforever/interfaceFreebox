@@ -50,6 +50,9 @@ int main(int argc, char *argv[])
 
 	ouvrirSocket(&sock, adresseIP, port);
 
+    free(adresseIP);
+    free(port);
+
     // On demande une ouverture de session, si ça échoue, ça demande une ouverture et une validation, possible qu'en local
     if (!validerAuthentification(sock))
     {

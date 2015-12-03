@@ -249,11 +249,15 @@ void requeteAutorisation(TCPsocket sock, objetJson *reponseJson)
     recupDonneesIdentifiants("DEVICE_NAME", &deviceName);
     sprintf(requete, "{\"app_id\": \"%s\",\"app_name\": \"%s\",\"app_version\": \"%s\",\"device_name\": \"%s\"}", appId, appName, appVersion, deviceName);
     generationRequetePOST(sock, "/api/v3/login/authorize", requete, reponseJson);
+
+    free(appId);
+    free(appName);
+    free(appVersion);
+    free(deviceName);
 }
 
 void requeteVerification(TCPsocket sock, objetJson *reponseJson, char *trackid)
 {
-    // A CORRIGER, il manque le trackid dans la requête
     char requete[256] = "/api/v3/login/authorize/";
     strcat(requete, trackid);
     generationRequeteGET(sock, requete, reponseJson);
@@ -268,13 +272,18 @@ void requeteSession(TCPsocket sock, objetJson *reponseJson, char *password)
 {
     char requete[256] = "/api/v3/login/session/";
     char infoJson[256] = "";
+    char *appId = NULL;
+
+    recupDonneesIdentifiants("APP_ID", &appId);
     strcat(infoJson, "{\"app_id\": \"");
-    strcat(infoJson, "AppliMike");
+    strcat(infoJson, appId);
     strcat(infoJson, "\",\"password\": \"");
     strcat(infoJson, password);
     strcat(infoJson, "\"}");
 
     generationRequetePOST(sock, requete, infoJson, reponseJson);
+
+    free(appId);
 }
 
 void requeteSessionAuthentifie(TCPsocket sock, objetJson *reponseJson, char *sessionToken)
@@ -361,6 +370,8 @@ void generationRequeteGET(TCPsocket sock, char *entete, objetJson *reponseJson)
     sprintf(requete, "GET %s HTTP/1.1\nHost: %s\n\n", entete, adresseIP);
 
     echangeReponseJson(sock, requete, reponseJson);
+
+    free(adresseIP);
 }
 
 void generationRequeteGETSession(TCPsocket sock, char *entete, objetJson *reponseJson, char *sessionToken)
@@ -373,6 +384,8 @@ void generationRequeteGETSession(TCPsocket sock, char *entete, objetJson *repons
     sprintf(requete, "GET %s HTTP/1.1\nHost: %s\nX-Fbx-App-Auth: %s\n\n", entete, adresseIP, sessionToken);
 
     echangeReponseJson(sock, requete, reponseJson);
+
+    free(adresseIP);
 }
 
 void generationRequetePOST(TCPsocket sock, char *entete, char *corps, objetJson *reponseJson)
@@ -384,6 +397,7 @@ void generationRequetePOST(TCPsocket sock, char *entete, char *corps, objetJson 
     sprintf(messageCompose, "POST %s HTTP/1.1\nHost: %s\nContent-Type: x-www-form-urlencoded\nContent-Length: %d\n\n%s", entete, adresseIP, strlen(corps), corps); // Ajoute l'élément nécessaire pour la bonne exécution de la requête
 
     echangeReponseJson(sock, messageCompose, reponseJson);
+    free(adresseIP);
 }
 
 void generationRequetePOSTSession(TCPsocket sock, char *entete, char *corps, objetJson *reponseJson, char *sessionToken)
@@ -396,6 +410,8 @@ void generationRequetePOSTSession(TCPsocket sock, char *entete, char *corps, obj
     sprintf(messageCompose, "POST %s HTTP/1.1\nHost: %s\nX-Fbx-App-Auth: %s\nContent-Type: x-www-form-urlencoded\nContent-Length: %d\n\n%s",entete, adresseIP, sessionToken, strlen(corps), corps); // Ajoute l'élément nécessaire pour la bonne exécution de la requête
 
     echangeReponseJson(sock, messageCompose, reponseJson);
+
+    free(adresseIP);
 }
 
 void generationRequetePUTSession(TCPsocket sock, char *entete, char *corps, objetJson *reponseJson, char *sessionToken)
@@ -408,4 +424,6 @@ void generationRequetePUTSession(TCPsocket sock, char *entete, char *corps, obje
     sprintf(messageCompose, "PUT %s HTTP/1.1\nHost: %s\nX-Fbx-App-Auth: %s\nContent-Type: x-www-form-urlencoded\nContent-Length: %d\n\n%s", entete, adresseIP, sessionToken, strlen(corps), corps); // Ajoute l'élément nécessaire pour la bonne exécution de la requête
 
     echangeReponseJson(sock, messageCompose, reponseJson);
+
+    free(adresseIP);
 }
